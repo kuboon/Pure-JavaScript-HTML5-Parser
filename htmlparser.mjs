@@ -221,12 +221,9 @@ export const HTMLParser = function (html, handler) {
 		if(tagName!== undefined) tagName = tagName.toLowerCase();
 		// If no tag name is provided, clean shop
 		let pos = 0;
-		if (tagName)
-			// Find the closest opened tag of the same type
-			for (const pos = stack.length - 1; pos >= 0; pos--)
-				if (stack[pos] == tagName)
-					break;
-
+		if (tagName) {
+			pos = stack.find(x => x === tagName)
+		}
 		if (pos >= 0) {
 			// Close all the open elements, up the stack
 			for (let i = stack.length - 1; i >= pos; i--)
