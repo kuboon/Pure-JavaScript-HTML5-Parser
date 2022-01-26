@@ -174,7 +174,7 @@ export const HTMLParser = function (html, handler) {
 		}
 
 		if (html == last)
-			throw "Parse Error: " + html;
+			throw new Error("Parse Error: " + JSON.stringify(stack) + html.substring(0, 20));
 		last = html;
 	}
 
@@ -225,7 +225,7 @@ export const HTMLParser = function (html, handler) {
 		// If no tag name is provided, clean shop
 		let pos = 0;
 		if (tagName) {
-			pos = stack.find(x => x === tagName)
+			pos = stack.indexOf(tagName)
 		}
 		if (pos >= 0) {
 			// Close all the open elements, up the stack
@@ -362,4 +362,10 @@ function makeMap(str) {
 		obj[items[i]] = true;
 	return obj;
 }
-HTMLParser('<!doctype html><div class="test">test</div>', {})
+
+function test() {
+	const url = 'https://example.com'
+	fetch(url).then(x=>x.text()).then(html=>{
+		HTMLParser(html, {})
+	})
+}
