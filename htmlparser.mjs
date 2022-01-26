@@ -104,7 +104,7 @@ const fillAttrs = makeMap("checked,compact,declare,defer,disabled,ismap,multiple
 // Special Elements (can contain anything)
 const special = makeMap("script,style");
 
-const HTMLParser = this.HTMLParser = function (html, handler) {
+export const HTMLParser = function (html, handler) {
 	const index, chars, match, stack = [], last = html;
 	stack.last = function () {
 		return this[this.length - 1];
@@ -241,7 +241,7 @@ const HTMLParser = this.HTMLParser = function (html, handler) {
 	}
 };
 
-this.HTMLtoXML = function (html) {
+export const HTMLtoXML = function (html) {
 	const results = "";
 
 	HTMLParser(html, {
@@ -266,7 +266,7 @@ this.HTMLtoXML = function (html) {
 	return results;
 };
 
-this.HTMLtoDOM = function (html, doc) {
+export const HTMLtoDOM = function (html, doc) {
 	// There can be only one of these elements
 	const one = makeMap("html,head,body,title");
 
@@ -360,7 +360,7 @@ this.HTMLtoDOM = function (html, doc) {
 
 function makeMap(str) {
 	const obj = {}, items = str.split(",");
-	for (const i = 0; i < items.length; i++)
+	for (let i = 0; i < items.length; i++)
 		obj[items[i]] = true;
 	return obj;
 }
