@@ -81,31 +81,31 @@
 
 
 // Regular Expressions for parsing tags and attributes
-var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+const startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
 	endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/,
 	attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
 
 // Empty Elements - HTML 5
-var empty = makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+const empty = makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
 
 // Block Elements - HTML 5
-var block = makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+const block = makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
 
 // Inline Elements - HTML 5
-var inline = makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+const inline = makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
 
 // Elements that you can, intentionally, leave open
 // (and which close themselves)
-var closeSelf = makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+const closeSelf = makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
 
 // Attributes that have their values filled in disabled="disabled"
-var fillAttrs = makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+const fillAttrs = makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
 
 // Special Elements (can contain anything)
-var special = makeMap("script,style");
+const special = makeMap("script,style");
 
-var HTMLParser = this.HTMLParser = function (html, handler) {
-	var index, chars, match, stack = [], last = html;
+const HTMLParser = this.HTMLParser = function (html, handler) {
+	const index, chars, match, stack = [], last = html;
 	stack.last = function () {
 		return this[this.length - 1];
 	};
@@ -151,7 +151,7 @@ var HTMLParser = this.HTMLParser = function (html, handler) {
 			if (chars) {
 				index = html.indexOf("<");
 
-				var text = index < 0 ? html : html.substring(0, index);
+				const text = index < 0 ? html : html.substring(0, index);
 				html = index < 0 ? "" : html.substring(index);
 
 				if (handler.chars)
@@ -197,10 +197,10 @@ var HTMLParser = this.HTMLParser = function (html, handler) {
 			stack.push(tagName);
 
 		if (handler.start) {
-			var attrs = [];
+			const attrs = [];
 
 			rest.replace(attr, function (match, name) {
-				var value = arguments[2] ? arguments[2] :
+				const value = arguments[2] ? arguments[2] :
 					arguments[3] ? arguments[3] :
 					arguments[4] ? arguments[4] :
 					fillAttrs[name] ? name : "";
@@ -221,17 +221,17 @@ var HTMLParser = this.HTMLParser = function (html, handler) {
 		if(tagName!== undefined) tagName = tagName.toLowerCase();
 		// If no tag name is provided, clean shop
 		if (!tagName)
-			var pos = 0;
+			const pos = 0;
 
 			// Find the closest opened tag of the same type
 		else
-			for (var pos = stack.length - 1; pos >= 0; pos--)
+			for (const pos = stack.length - 1; pos >= 0; pos--)
 				if (stack[pos] == tagName)
 					break;
 
 		if (pos >= 0) {
 			// Close all the open elements, up the stack
-			for (var i = stack.length - 1; i >= pos; i--)
+			for (const i = stack.length - 1; i >= pos; i--)
 				if (handler.end)
 					handler.end(stack[i]);
 
@@ -242,13 +242,13 @@ var HTMLParser = this.HTMLParser = function (html, handler) {
 };
 
 this.HTMLtoXML = function (html) {
-	var results = "";
+	const results = "";
 
 	HTMLParser(html, {
 		start: function (tag, attrs, unary) {
 			results += "<" + tag;
 
-			for (var i = 0; i < attrs.length; i++)
+			for (const i = 0; i < attrs.length; i++)
 				results += " " + attrs[i].name + '="' + attrs[i].escaped + '"';
 			results += ">";
 		},
@@ -268,10 +268,10 @@ this.HTMLtoXML = function (html) {
 
 this.HTMLtoDOM = function (html, doc) {
 	// There can be only one of these elements
-	var one = makeMap("html,head,body,title");
+	const one = makeMap("html,head,body,title");
 
 	// Enforce a structure for the document
-	var structure = {
+	const structure = {
 		link: "head",
 		base: "head"
 	};
@@ -289,15 +289,15 @@ this.HTMLtoDOM = function (html, doc) {
 			doc.getOwnerDocument && doc.getOwnerDocument() ||
 			doc;
 
-	var elems = [],
+	const elems = [],
 		documentElement = doc.documentElement ||
 			doc.getDocumentElement && doc.getDocumentElement();
 
 	// If we're dealing with an empty document then we
 	// need to pre-populate it with the HTML document structure
 	if (!documentElement && doc.createElement) (function () {
-		var html = doc.createElement("html");
-		var head = doc.createElement("head");
+		const html = doc.createElement("html");
+		const head = doc.createElement("head");
 		head.appendChild(doc.createElement("title"));
 		html.appendChild(head);
 		html.appendChild(doc.createElement("body"));
@@ -306,12 +306,12 @@ this.HTMLtoDOM = function (html, doc) {
 
 	// Find all the unique elements
 	if (doc.getElementsByTagName)
-		for (var i in one)
+		for (const i in one)
 			one[i] = doc.getElementsByTagName(i)[0];
 
 	// If we're working with a document, inject contents into
 	// the body element
-	var curParentNode = one.body;
+	const curParentNode = one.body;
 
 	HTMLParser(html, {
 		start: function (tagName, attrs, unary) {
@@ -325,9 +325,9 @@ this.HTMLtoDOM = function (html, doc) {
 				return;
 			}
 
-			var elem = doc.createElement(tagName);
+			const elem = doc.createElement(tagName);
 
-			for (var attr in attrs)
+			for (const attr in attrs)
 				elem.setAttribute(attrs[attr].name, attrs[attr].value);
 
 			if (structure[tagName] && typeof one[structure[tagName]] != "boolean")
@@ -359,8 +359,8 @@ this.HTMLtoDOM = function (html, doc) {
 };
 
 function makeMap(str) {
-	var obj = {}, items = str.split(",");
-	for (var i = 0; i < items.length; i++)
+	const obj = {}, items = str.split(",");
+	for (const i = 0; i < items.length; i++)
 		obj[items[i]] = true;
 	return obj;
 }
