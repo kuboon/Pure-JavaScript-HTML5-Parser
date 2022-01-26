@@ -159,7 +159,7 @@ export const HTMLParser = function (html, handler) {
 			}
 
 		} else {
-			html = html.replace(new RegExp("([\\s\\S]*?)<\/" + stack.last() + "[^>]*>"), function (all, text) {
+			html = html.replace(new RegExp("([\\s\\S]*?)<\/" + stack.last() + "[^>]*>"), function (_all, text) {
 				text = text.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
 				if (handler.chars)
 					handler.chars(text);
@@ -178,7 +178,7 @@ export const HTMLParser = function (html, handler) {
 	// Clean up any remaining tags
 	parseEndTag();
 
-	function parseStartTag(tag, tagName, rest, unary) {
+	function parseStartTag(_tag, tagName, rest, unary) {
 		tagName = tagName.toLowerCase();
 
 		if (block[tagName]) {
@@ -199,7 +199,7 @@ export const HTMLParser = function (html, handler) {
 		if (handler.start) {
 			const attrs = [];
 
-			rest.replace(attr, function (match, name) {
+			rest.replace(attr, function (_match, name) {
 				const value = arguments[2] ? arguments[2] :
 					arguments[3] ? arguments[3] :
 					arguments[4] ? arguments[4] :
@@ -217,14 +217,12 @@ export const HTMLParser = function (html, handler) {
 		}
 	}
 
-	function parseEndTag(tag, tagName) {
+	function parseEndTag(_tag, tagName) {
 		if(tagName!== undefined) tagName = tagName.toLowerCase();
 		// If no tag name is provided, clean shop
-		if (!tagName)
-			const pos = 0;
-
+		let pos = 0
+		if (tagName)
 			// Find the closest opened tag of the same type
-		else
 			for (const pos = stack.length - 1; pos >= 0; pos--)
 				if (stack[pos] == tagName)
 					break;
@@ -245,7 +243,7 @@ export const HTMLtoXML = function (html) {
 	const results = "";
 
 	HTMLParser(html, {
-		start: function (tag, attrs, unary) {
+		start: function (tag, attrs, _unary) {
 			results += "<" + tag;
 
 			for (const i = 0; i < attrs.length; i++)
@@ -341,7 +339,7 @@ export const HTMLtoDOM = function (html, doc) {
 				curParentNode = elem;
 			}
 		},
-		end: function (tag) {
+		end: function (_tag) {
 			elems.length -= 1;
 
 			// Init the new parentNode
@@ -350,7 +348,7 @@ export const HTMLtoDOM = function (html, doc) {
 		chars: function (text) {
 			curParentNode.appendChild(doc.createTextNode(text));
 		},
-		comment: function (text) {
+		comment: function (_text) {
 			// create comment node
 		}
 	});
