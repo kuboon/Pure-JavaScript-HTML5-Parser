@@ -105,7 +105,7 @@ const fillAttrs = makeMap("checked,compact,declare,defer,disabled,ismap,multiple
 const special = makeMap("script,style");
 
 export const HTMLParser = function (html, handler) {
-	const index, chars, match, stack = [], last = html;
+	let index, chars, match, stack = [], last = html;
 	stack.last = function () {
 		return this[this.length - 1];
 	};
@@ -220,7 +220,7 @@ export const HTMLParser = function (html, handler) {
 	function parseEndTag(_tag, tagName) {
 		if(tagName!== undefined) tagName = tagName.toLowerCase();
 		// If no tag name is provided, clean shop
-		let pos = 0
+		let pos = 0;
 		if (tagName)
 			// Find the closest opened tag of the same type
 			for (const pos = stack.length - 1; pos >= 0; pos--)
@@ -229,7 +229,7 @@ export const HTMLParser = function (html, handler) {
 
 		if (pos >= 0) {
 			// Close all the open elements, up the stack
-			for (const i = stack.length - 1; i >= pos; i--)
+			for (let i = stack.length - 1; i >= pos; i--)
 				if (handler.end)
 					handler.end(stack[i]);
 
