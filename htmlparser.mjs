@@ -137,8 +137,11 @@ export const HTMLParser = function (html, handler) {
 					chars = false;
 				}
 
-				// start tag
+			} else if (html.indexOf("<!") == 0) {
+				// doctype
+				html = html.substring(html.indexOf(">") + 1);
 			} else if (html.indexOf("<") == 0) {
+				// start tag
 				match = html.match(startTag);
 
 				if (match) {
@@ -359,3 +362,4 @@ function makeMap(str) {
 		obj[items[i]] = true;
 	return obj;
 }
+HTMLParser('<!doctype html><div class="test">test</div>', {})
